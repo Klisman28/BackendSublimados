@@ -1,0 +1,1 @@
+#pureba... no inserta las optiones de las propiedades
