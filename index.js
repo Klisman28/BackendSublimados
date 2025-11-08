@@ -17,7 +17,7 @@ const allowedOrigins = [
   'https://main.d7drqxc8d92jq.amplifyapp.com',
   'http://146.190.127.243:3000',
   'http://MiscelaniaLis',  
-  'https://www.miscelanialis.shop',
+  'https://www.cianitasublimados.com',
   'https://miscelanialis.shop',
   'https://main.d19bqybnclb2c8.amplifyapp.com',
   'https://main.d5xo4i6tl0to6.amplifyapp.com/'
