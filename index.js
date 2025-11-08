@@ -19,7 +19,8 @@ const allowedOrigins = [
   'http://MiscelaniaLis',  
   'https://www.miscelanialis.shop',
   'https://miscelanialis.shop',
-  'https://main.d19bqybnclb2c8.amplifyapp.com'
+  'https://main.d19bqybnclb2c8.amplifyapp.com',
+  'https://main.d5xo4i6tl0to6.amplifyapp.com/'
 ]; // Cambia 'http://localhost:3005' a la URL de tu frontend
 
 // Opciones de configuración de CORS
