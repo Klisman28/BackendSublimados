@@ -1,6 +1,8 @@
 const boom = require('@hapi/boom');
 const { Op } = require('sequelize');
 const { models } = require('../../libs/sequelize');
+const { Sequelize } = require('sequelize');
+
 
 class ProductsService {
     async find(query) {
@@ -91,7 +93,7 @@ class ProductsService {
                 expirationDate: {
                     [Op.between]: [
                         Sequelize.literal('CURRENT_DATE'),
-                        Sequelize.literal("CURRENT_DATE + interval \'7 day\'")
+                        Sequelize.literal('DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY)')
                     ]
                 }
             },
@@ -102,6 +104,8 @@ class ProductsService {
             ],
             order: [['expirationDate', 'ASC']]
         });
+          return products;
+
     }
 
 
@@ -251,34 +255,37 @@ class ProductsService {
         return product;
     }
 
-    async update(id, changes) {
-        let product = await this.findOne(id);
-        // Asegurarse de que expirationDate solo se guarde si hasExpiration es true
-        if (changes.hasExpiration && changes.expirationDate) {
-            changes.expirationDate = changes.expirationDate;
-        } else {
-            changes.expirationDate = '';
-        }
-        if (changes.description) {
-            changes.description = changes.description;
-        }
-        product = await product.update(changes);
-        // await models.Feature.destroy({
-        //     where: {
-        //         productId: id
-        //     }
-        // });
-        // if (changes.features && changes.features.length > 0) {
-        //     const features = changes.features.map((feature) => {
-        //         return {
-        //             ...feature,
-        //             productId: product.id
-        //         }
-        //     });
-        //     await models.Feature.bulkCreate(features);
-        // }
-        return product;
+  async update(id, changes) {
+  let product = await this.findOne(id);
+
+  // Normalizar expirationDate
+  if (changes.hasExpiration) {
+    // si viene vacío o no viene -> null
+    if (!changes.expirationDate) {
+      changes.expirationDate = null;
+    } else {
+      const d = new Date(changes.expirationDate);
+
+      // validar fecha
+      if (Number.isNaN(d.getTime())) {
+        // ideal: lanzar 400 (bad request) en vez de 500
+        throw new Error('expirationDate inválida');
+      }
+
+      // Si tu columna es DATEONLY, mejor guardar YYYY-MM-DD
+      // changes.expirationDate = d.toISOString().slice(0, 10);
+
+      // Si tu columna es DATETIME, puedes guardar Date directamente
+      changes.expirationDate = d;
     }
+  } else {
+    changes.expirationDate = null;
+  }
+
+  product = await product.update(changes);
+  return product;
+}
+
 
     async delete(id) {
         const product = await this.findOne(id);
